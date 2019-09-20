@@ -50,12 +50,31 @@ namespace ExcelDataReaderConsoleApp
                 Console.ReadKey();
                 //Define a Table object variable by supplying the parent database and table name in the constructor.  
                 tb = new Table(db, SheetName);
+                DropTableIfExists();
+                CreateColumns();
                 //CreateRows();
                 tb.Create();
             }
 
         }
 
-       
+        public void ConvertExcelDataTypesToSql()
+
+        {
+            for (dynamic i = 0; i < ColumnsDataTypes.Count; i++)
+            {
+                if (ColumnsDataTypes[i] == typeof(String))
+                {
+                    ColumnsDataTypes[i] = DataType.NVarChar(255);
+                }
+                else
+                {
+                    ColumnsDataTypes[i] = DataType.Float;
+                }
+
+            }
+        }
+
+        
     }
 }
