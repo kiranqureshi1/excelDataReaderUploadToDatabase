@@ -92,6 +92,34 @@ namespace ExcelDataReaderConsoleApp
                 }
             }
         }
+
+        public static void GetDataFromExcelFile(string fileName)
+        {
+            using (var stream = File.Open(fileName, FileMode.Open, FileAccess.Read))
+            {
+                IExcelDataReader reader;
+                reader = ExcelDataReader.ExcelReaderFactory.CreateReader(stream);
+                var conf = new ExcelDataSetConfiguration
+                {
+                    ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                    {
+                        UseHeaderRow = true
+                    }
+                };
+                var dataSet = reader.AsDataSet(conf);
+                dataTable = dataSet.Tables[0];
+                for (var i = 0; i < dataTable.Rows.Count; i++)
+                {
+                    for (var j = 0; j < dataTable.Columns.Count; j++)
+                    {
+                        data = dataTable.Rows[i][j];
+                        Console.WriteLine(data);
+                    }
+                }
+                Console.WriteLine("Congratulations!!! data of the whole table displayed");
+                Console.ReadKey();
+            }
+        }
     }
 }
 
