@@ -28,7 +28,6 @@ namespace ExcelDataReaderConsoleApp
             fileEntries = Directory.GetFiles(path, "*" + search + "*", SearchOption.AllDirectories);
             foreach (string fileName in fileEntries)
             {
-                string[] fileEntries = Directory.GetFiles(path, "*" + search + "*", SearchOption.AllDirectories);
                 getColumnNameFromExcel(fileName);
                 getRowsDataTypesFromExcelFile(fileName);
                 GetDataFromExcelFile(fileName);
@@ -49,16 +48,17 @@ namespace ExcelDataReaderConsoleApp
                         reader.Read();
                         {
                             SheetName = reader.Name;
-                            Console.WriteLine("Displaying Table Name:");
-                            Console.WriteLine(SheetName);
+                            //Console.WriteLine("Displaying Table Name:");
+                            //Console.WriteLine(SheetName);
+                            //Console.ReadKey();
                             var cols = Enumerable.Range(0, reader.FieldCount).Select(i => reader.GetValue(i)).ToList();
-                            Console.Write("Displaying Column Names:");
+                            // Console.Write("Displaying Column Names:");
                             foreach (var stuff in cols)
                             {
                                 ColumnNames = new List<dynamic>();
                                 ColumnNames = cols;
-                                Console.WriteLine(stuff);
-                                Console.ReadKey();
+                                //Console.WriteLine(stuff);
+                                //Console.ReadKey();
                             }
                         }
                     }
@@ -77,16 +77,16 @@ namespace ExcelDataReaderConsoleApp
                 {
                     reader.Read();
                     {
-                        Console.WriteLine("Getting Columns Datatypes");
+                        // Console.WriteLine("Getting Columns Datatypes");
                         var rows = Enumerable.Range(0, reader.FieldCount).Select(i => reader.Read()).ToArray();
                         ColumnsDataTypes = new List<dynamic>();
                         for (int i = 0; i < rows.Length; i++)
                         {
                             var COL = reader.GetFieldType(i);
                             ColumnsDataTypes.Add(COL);
-                            Console.WriteLine(COL);
+                            //Console.WriteLine(COL);
+                            //Console.ReadKey();
                         }
-                        Console.WriteLine("Congrats!! Columns Datatypes displayed sucessfully");
                     }
 
                 }
@@ -99,6 +99,7 @@ namespace ExcelDataReaderConsoleApp
             {
                 IExcelDataReader reader;
                 reader = ExcelDataReader.ExcelReaderFactory.CreateReader(stream);
+                //Console.WriteLine("Getting Columns Data");
                 var conf = new ExcelDataSetConfiguration
                 {
                     ConfigureDataTable = _ => new ExcelDataTableConfiguration
@@ -113,13 +114,12 @@ namespace ExcelDataReaderConsoleApp
                     for (var j = 0; j < dataTable.Columns.Count; j++)
                     {
                         data = dataTable.Rows[i][j];
-                        Console.WriteLine(data);
+                        //Console.WriteLine(data);
+                        //Console.ReadKey();
                     }
                 }
-                Console.WriteLine("Congratulations!!! data of the whole table displayed");
-                Console.ReadKey();
             }
         }
     }
 }
-
+                                                                                                                                                                                                                             
