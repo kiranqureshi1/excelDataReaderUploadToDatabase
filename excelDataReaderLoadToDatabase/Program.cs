@@ -66,7 +66,32 @@ namespace ExcelDataReaderConsoleApp
             }
         }
 
-      
+        public static void getRowsDataTypesFromExcelFile(string fileName)
+        {
+            using (var stream = File.Open(fileName, FileMode.Open, FileAccess.Read))
+            {
+                // Auto-detect format, supports:
+                //  - Binary Excel files (2.0-2003 format; *.xls)
+                //  - OpenXml Excel files (2007 format; *.xlsx)
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    reader.Read();
+                    {
+                        Console.WriteLine("Getting Columns Datatypes");
+                        var rows = Enumerable.Range(0, reader.FieldCount).Select(i => reader.Read()).ToArray();
+                        ColumnsDataTypes = new List<dynamic>();
+                        for (int i = 0; i < rows.Length; i++)
+                        {
+                            var COL = reader.GetFieldType(i);
+                            ColumnsDataTypes.Add(COL);
+                            Console.WriteLine(COL);
+                        }
+                        Console.WriteLine("Congrats!! Columns Datatypes displayed sucessfully");
+                    }
+
+                }
+            }
+        }
     }
 }
 
