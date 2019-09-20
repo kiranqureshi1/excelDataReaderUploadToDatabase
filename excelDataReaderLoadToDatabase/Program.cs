@@ -29,10 +29,44 @@ namespace ExcelDataReaderConsoleApp
             foreach (string fileName in fileEntries)
             {
                 string[] fileEntries = Directory.GetFiles(path, "*" + search + "*", SearchOption.AllDirectories);
+                getColumnNameFromExcel(fileName);
+                getRowsDataTypesFromExcelFile(fileName);
+                GetDataFromExcelFile(fileName);
                 Sql sql = new Sql(SheetName, ColumnNames, ColumnsDataTypes, dataTable);
+                sql.ConvertExcelDataTypesToSql();
                 sql.CreateTable();
+                sql.CreateRows();
             }
         }
+
+        public static void getColumnNameFromExcel(string fileName)
+        {
+            using (stream = File.Open(fileName, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    {
+                        reader.Read();
+                        {
+                            SheetName = reader.Name;
+                            Console.WriteLine("Displaying Table Name:");
+                            Console.WriteLine(SheetName);
+                            var cols = Enumerable.Range(0, reader.FieldCount).Select(i => reader.GetValue(i)).ToList();
+                            Console.Write("Displaying Column Names:");
+                            foreach (var stuff in cols)
+                            {
+                                ColumnNames = new List<dynamic>();
+                                ColumnNames = cols;
+                                Console.WriteLine(stuff);
+                                Console.ReadKey();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+      
     }
 }
 
