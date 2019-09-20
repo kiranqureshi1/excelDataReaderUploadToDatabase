@@ -16,7 +16,7 @@ namespace ExcelDataReaderConsoleApp
         public object MessageBox { get; private set; }
         public static Database db;
         public static Table tb;
-        public static Server srv;
+        public static Server srv;                
         public static String SheetName;
         public static List<dynamic> ColumnNames;
         public static List<dynamic> ColumnsDataTypes;
