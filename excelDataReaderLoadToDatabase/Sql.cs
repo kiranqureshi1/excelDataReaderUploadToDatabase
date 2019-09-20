@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,12 +21,6 @@ namespace ExcelDataReaderConsoleApp
         public static List<dynamic> ColumnNames;
         public static List<dynamic> ColumnsDataTypes;
         public static DataTable DataTable;
-        public static string path = "C:\\Temp\\source";
-        public static string search = "*.xlsx";
-
-        //public Sql()
-        //{
-        //}
 
         public Sql(String sheetName, List<dynamic> columnNames, List<dynamic> DataTypes, DataTable dataTable)
         {
@@ -38,24 +33,20 @@ namespace ExcelDataReaderConsoleApp
 
         public void CreateTable()
         {
-            string[] fileEntries = Directory.GetFiles(path, "*" + search + "*", SearchOption.AllDirectories);
-            foreach (string fileName in fileEntries)
-            {
-                //Connect to the local, default instance of SQL Server.   
-                srv = new Server(".\\");
-                Console.WriteLine(srv.Name);
-                //Reference the AdventureWorks2012 database.   
-                db = srv.Databases["fileToUpload"];
-                Console.WriteLine(db.Name);
-                Console.ReadKey();
-                //Define a Table object variable by supplying the parent database and table name in the constructor.  
-                tb = new Table(db, SheetName);
-                DropTableIfExists();
-                CreateColumns();
-                //CreateRows();
-                tb.Create();
-            }
-
+            string server = System.Configuration.ConfigurationManager.AppSettings["server"];
+            string database = ConfigurationManager.AppSettings["database"].ToString();
+            Console.WriteLine(server);
+            Console.WriteLine(database);
+            //Connect to the local, default instance of SQL Server.   
+            srv = new Server(server);
+            Console.WriteLine(srv);
+            //Reference the AdventureWorks2012 database.   
+            db = srv.Databases[database];
+            //Define a Table object variable by supplying the parent database and table name in the constructor.  
+            tb = new Table(db, SheetName);
+            DropTableIfExists();
+            CreateColumns();
+            tb.Create();
         }
 
         public void ConvertExcelDataTypesToSql()
@@ -91,10 +82,24 @@ namespace ExcelDataReaderConsoleApp
                 Column col;
                 col = new Column(tb, ColumnNames[i], ColumnsDataTypes[i]);
                 tb.Columns.Add(col);
-                Console.WriteLine($"Displaying Column Names & dataTypes {col}");
-                Console.ReadKey();
-
             }
+        }
+
+        public void CreateRows()
+        {
+            // String sqlConnectionString = "Data Source = localhost\\ADM; Initial Catalog =fileToUpload; Integrated Security = SSPI;";
+            string sqlConnectionString = ConfigurationManager.ConnectionStrings["MyKey"].ConnectionString;
+            Console.WriteLine(sqlConnectionString);
+            Console.ReadKey();
+            using (var bulkCopy = new SqlBulkCopy(sqlConnectionString))
+            {
+                bulkCopy.DestinationTableName = tb.Name.ToString();
+                bulkCopy.WriteToServer(DataTable);
+            }
+            //Console.WriteLine($"Copying data to the table {DataTable} in database.");
+            //Console.ReadKey();
+            //Console.WriteLine("database Updted.");
+            //Console.ReadKey();
         }
     }
 }
