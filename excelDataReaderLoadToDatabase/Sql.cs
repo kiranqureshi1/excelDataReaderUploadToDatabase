@@ -75,6 +75,26 @@ namespace ExcelDataReaderConsoleApp
             }
         }
 
-        
+        public void DropTableIfExists()
+        {
+            bool tableExists = db.Tables.Contains(SheetName);
+            if (tableExists)
+            {
+                db.Tables[SheetName].Drop();
+            }
+        }
+
+        public void CreateColumns()
+        {
+            for (dynamic i = 0; i < Math.Min(ColumnNames.Count, ColumnsDataTypes.Count); i++)
+            {
+                Column col;
+                col = new Column(tb, ColumnNames[i], ColumnsDataTypes[i]);
+                tb.Columns.Add(col);
+                Console.WriteLine($"Displaying Column Names & dataTypes {col}");
+                Console.ReadKey();
+
+            }
+        }
     }
 }
