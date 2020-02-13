@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "excelDataReaderLoadToDatabase", "excelDataReaderLoadToDatabase\excelDataReaderLoadToDatabase.csproj", "{63058D9F-F2E0-4911-B540-86B2FABB9777}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataValidation", "DataValidation\DataValidation.csproj", "{282764A5-2D1E-46F6-AAE6-512B92042B41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataValidationandUploadUnitTesting", "DataValidationandUploadUnitTesting\DataValidationandUploadUnitTesting.csproj", "{59BF5DBD-AD66-44DD-A02B-2B3B54D6B9C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{63058D9F-F2E0-4911-B540-86B2FABB9777}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63058D9F-F2E0-4911-B540-86B2FABB9777}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63058D9F-F2E0-4911-B540-86B2FABB9777}.Release|Any CPU.Build.0 = Release|Any CPU
+		{282764A5-2D1E-46F6-AAE6-512B92042B41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{282764A5-2D1E-46F6-AAE6-512B92042B41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{282764A5-2D1E-46F6-AAE6-512B92042B41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{282764A5-2D1E-46F6-AAE6-512B92042B41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59BF5DBD-AD66-44DD-A02B-2B3B54D6B9C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59BF5DBD-AD66-44DD-A02B-2B3B54D6B9C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59BF5DBD-AD66-44DD-A02B-2B3B54D6B9C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59BF5DBD-AD66-44DD-A02B-2B3B54D6B9C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

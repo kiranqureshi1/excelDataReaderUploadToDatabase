@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{63058D9F-F2E0-4911-B540-86B2FABB9777}</ProjectGuid>
+    <ProjectGuid>{282764A5-2D1E-46F6-AAE6-512B92042B41}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>excelDataReaderLoadToDatabase</RootNamespace>
-    <AssemblyName>excelDataReaderLoadToDatabase</AssemblyName>
+    <RootNamespace>DataValidation</RootNamespace>
+    <AssemblyName>DataValidation</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -160,11 +160,9 @@
     <Compile Include="LogWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sql.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="NLog.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

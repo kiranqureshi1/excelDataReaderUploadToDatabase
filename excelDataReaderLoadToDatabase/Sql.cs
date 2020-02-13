@@ -3,51 +3,81 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExcelDataReaderConsoleApp
 {
     class Sql
     {
         public object MessageBox { get; private set; }
-        public static Database db;
-        public static Table tb;
-        public static Server srv;                
-        public static String SheetName;
-        public static List<dynamic> ColumnNames;
-        public static List<dynamic> ColumnsDataTypes;
-        public static DataTable DataTable;
+        private Database db;
+        private Table tb;
+        private Server srv;
+        private readonly String SheetName;
+        private List<dynamic> ColumnNames;
+        private List<dynamic> ColumnsDataTypes;
+        private readonly DataTable DataTable;
+        private static readonly string server;
 
-        public Sql(String sheetName, List<dynamic> columnNames, List<dynamic> DataTypes, DataTable dataTable)
+        //public Sql()
+        //{
+        //}
+        static Sql()
+        {
+            server = System.Configuration.ConfigurationManager.AppSettings["server"];
+        }
+
+        public Sql(String sheetName, DataTable dataTable, List<dynamic> columnNames, List<dynamic> DataTypes)
         {
             SheetName = sheetName;
+            DataTable = dataTable;
             ColumnNames = columnNames;
             ColumnsDataTypes = DataTypes;
-            DataTable = dataTable;
+        }
+
+        public void CreateDbGet_Table_Columns_Rows_DataTypes(string database)
+        {
+            //string server = System.Configuration.ConfigurationManager.AppSettings["server"];
+            //string database = ConfigurationManager.AppSettings["database"].ToString();
+            srv = new Server(server);
+            DropDatabaseIfExists(database);
+            db = new Database(srv, database);
+            db.Create();
+            ConvertExcelDataTypesToSql();
+            CreateTable();
+            // CreateColumns();
+            CreateRows(database);
         }
 
 
-        public void CreateTable()
+        public Database UseExistingDatabaseGet_Table_Columns_Rows_DataTypes(string database)
         {
             string server = System.Configuration.ConfigurationManager.AppSettings["server"];
-            string database = ConfigurationManager.AppSettings["database"].ToString();
-            Console.WriteLine(server);
-            Console.WriteLine(database);
-            //Connect to the local, default instance of SQL Server.   
+            //string database = ConfigurationManager.AppSettings["database"].ToString();
             srv = new Server(server);
-            Console.WriteLine(srv);
-            //Reference the AdventureWorks2012 database.   
             db = srv.Databases[database];
-            //Define a Table object variable by supplying the parent database and table name in the constructor.  
+            ConvertExcelDataTypesToSql();
+            CreateTable();
+            CreateRows(database);
+            return db;
+        }
+
+
+        public Table CreateTable()
+        {
+            // string database = ConfigurationManager.AppSettings["database"].ToString();
+            // //string server = System.Configuration.ConfigurationManager.AppSettings["server"];
+
+            //srv = new Server(server);
+            // db = srv.Databases[database];
+            // //tb = new Table(db, SheetName);
             tb = new Table(db, SheetName);
             DropTableIfExists();
             CreateColumns();
             tb.Create();
+            return tb;
         }
+
 
         public void ConvertExcelDataTypesToSql()
 
@@ -62,7 +92,6 @@ namespace ExcelDataReaderConsoleApp
                 {
                     ColumnsDataTypes[i] = DataType.Float;
                 }
-
             }
         }
 
@@ -75,31 +104,44 @@ namespace ExcelDataReaderConsoleApp
             }
         }
 
-        public void CreateColumns()
+        public void DropDatabaseIfExists(string database)
         {
-            for (dynamic i = 0; i < Math.Min(ColumnNames.Count, ColumnsDataTypes.Count); i++)
+            Boolean databaseExists = srv.Databases.Contains(database);
+            if (databaseExists)
             {
-                Column col;
-                col = new Column(tb, ColumnNames[i], ColumnsDataTypes[i]);
-                tb.Columns.Add(col);
+                srv.Databases[database].Drop();
             }
         }
 
-        public void CreateRows()
+        public void CreateColumns()
         {
-            // String sqlConnectionString = "Data Source = localhost\\ADM; Initial Catalog =fileToUpload; Integrated Security = SSPI;";
+            for (dynamic indexNumber = 0; indexNumber < Math.Min(ColumnNames.Count, ColumnsDataTypes.Count); indexNumber++)
+            {
+                Column column;
+                column = new Column(tb, ColumnNames[indexNumber], ColumnsDataTypes[indexNumber])
+                {
+                    Collation = "Latin1_General_CI_AS",
+                    Nullable = true
+                };
+                tb.Columns.Add(column);
+            }
+        }
+
+        public void CreateRows(string database)
+        {
+            // string database = ConfigurationManager.AppSettings["database"].ToString();
+            // SqlConnectionStringBuilder sqlConnectionString = new SqlConnectionStringBuilder();
+            // sqlConnectionString.DataSource = @"localhost\ADM";
+            // sqlConnectionString.InitialCatalog = database;
+            //sqlConnectionString.IntegratedSecurity = true;
+            // MessageBox.Show(connectionString.ConnectionString);
             string sqlConnectionString = ConfigurationManager.ConnectionStrings["MyKey"].ConnectionString;
-            Console.WriteLine(sqlConnectionString);
-            Console.ReadKey();
+            sqlConnectionString = string.Format(sqlConnectionString, server, database);
             using (var bulkCopy = new SqlBulkCopy(sqlConnectionString))
             {
                 bulkCopy.DestinationTableName = tb.Name.ToString();
                 bulkCopy.WriteToServer(DataTable);
             }
-            //Console.WriteLine($"Copying data to the table {DataTable} in database.");
-            //Console.ReadKey();
-            //Console.WriteLine("database Updted.");
-            //Console.ReadKey();
         }
     }
 }
